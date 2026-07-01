@@ -62,7 +62,7 @@ class Index extends Component
 
         Material::updateOrCreate(['id' => $this->editingId], $data);
 
-        session()->flash('status', $this->editingId ? 'Material updated.' : 'Material added.');
+        session()->flash('status', $this->editingId ? 'ماده به‌روزرسانی شد.' : 'ماده افزوده شد.');
         $this->showForm = false;
         $this->reset(['editingId', 'name', 'unit', 'unit_price', 'category']);
     }
@@ -70,7 +70,7 @@ class Index extends Component
     public function delete(int $id): void
     {
         Material::findOrFail($id)->delete();
-        session()->flash('status', 'Material deleted.');
+        session()->flash('status', 'ماده حذف شد.');
     }
 
     public function render()
@@ -81,6 +81,6 @@ class Index extends Component
             ->paginate(20);
 
         return view('livewire.materials.index', ['materials' => $materials])
-            ->title('Materials & price list');
+            ->title('مواد و لیست قیمت');
     }
 }

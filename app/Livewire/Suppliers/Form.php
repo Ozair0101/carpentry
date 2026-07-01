@@ -47,7 +47,7 @@ class Form extends Component
             $supplier = Supplier::create($data);
         }
 
-        session()->flash('status', $this->supplier ? 'Supplier updated.' : 'Supplier created.');
+        session()->flash('status', $this->supplier ? 'تأمین‌کننده به‌روزرسانی شد.' : 'تأمین‌کننده ایجاد شد.');
 
         return $this->redirectRoute('suppliers.show', $supplier, navigate: true);
     }
@@ -55,6 +55,6 @@ class Form extends Component
     public function render()
     {
         return view('livewire.suppliers.form')
-            ->title($this->supplier ? 'Edit supplier' : 'New supplier');
+            ->title($this->supplier ? 'ویرایش تأمین‌کننده' : 'تأمین‌کننده جدید');
     }
 }

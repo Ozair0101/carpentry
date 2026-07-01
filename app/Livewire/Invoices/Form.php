@@ -91,7 +91,7 @@ class Form extends Component
         $invoice->load('items');
         $invoice->recalculate();
 
-        session()->flash('status', $this->invoice ? 'Invoice updated.' : 'Invoice created.');
+        session()->flash('status', $this->invoice ? 'فاکتور به‌روزرسانی شد.' : 'فاکتور ایجاد شد.');
 
         return $this->redirectRoute('invoices.show', $invoice, navigate: true);
     }
@@ -101,6 +101,6 @@ class Form extends Component
         return view('livewire.invoices.form', [
             'customers' => Customer::orderBy('name')->get(['id', 'name']),
             'materials' => Material::orderBy('name')->get(['id', 'name', 'unit', 'unit_price']),
-        ])->title($this->invoice ? 'Edit invoice' : 'New invoice');
+        ])->title($this->invoice ? 'ویرایش فاکتور' : 'فاکتور جدید');
     }
 }

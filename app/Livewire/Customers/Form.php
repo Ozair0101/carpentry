@@ -42,11 +42,11 @@ class Form extends Component
 
         if ($this->customer) {
             $this->customer->update($data);
-            $message = 'Customer updated.';
+            $message = 'مشتری به‌روزرسانی شد.';
             $customer = $this->customer;
         } else {
             $customer = Customer::create($data);
-            $message = 'Customer created.';
+            $message = 'مشتری ایجاد شد.';
         }
 
         session()->flash('status', $message);
@@ -57,6 +57,6 @@ class Form extends Component
     public function render()
     {
         return view('livewire.customers.form')
-            ->title($this->customer ? 'Edit customer' : 'New customer');
+            ->title($this->customer ? 'ویرایش مشتری' : 'مشتری جدید');
     }
 }

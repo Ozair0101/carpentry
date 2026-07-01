@@ -44,6 +44,6 @@ class Dashboard extends Component
             'jobsDueThisWeek' => $jobsDueThisWeek,
             'openEstimates' => $openEstimates,
             'unpaidInvoices' => $unpaidInvoices->take(6),
-        ])->title('Dashboard');
+        ])->title('داشبورد');
     }
 }

@@ -61,11 +61,11 @@ class Company extends Component
 
         $this->settings->update($data);
 
-        session()->flash('status', 'Settings saved.');
+        session()->flash('status', 'تنظیمات ذخیره شد.');
     }
 
     public function render()
     {
-        return view('livewire.settings.company')->title('Settings');
+        return view('livewire.settings.company')->title('تنظیمات');
     }
 }

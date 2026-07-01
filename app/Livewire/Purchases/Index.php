@@ -45,6 +45,6 @@ class Index extends Component
         return view('livewire.purchases.index', [
             'bills' => $bills,
             'totalPayable' => $totalPayable,
-        ])->title('Bills (payables)');
+        ])->title('بل‌ها (قابل پرداخت)');
     }
 }

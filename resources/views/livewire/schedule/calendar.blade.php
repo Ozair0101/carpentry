@@ -1,17 +1,17 @@
 <div class="space-y-4">
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-            <button wire:click="goToMonth(-1)" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">←</button>
-            <button wire:click="today" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">Today</button>
-            <button wire:click="goToMonth(1)" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">→</button>
-            <h2 class="ml-2 text-lg font-semibold text-stone-800">{{ $cursor->format('F Y') }}</h2>
+            <button wire:click="goToMonth(-1)" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">→</button>
+            <button wire:click="today" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">امروز</button>
+            <button wire:click="goToMonth(1)" class="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm hover:bg-stone-50">←</button>
+            <h2 class="mr-2 text-lg font-semibold text-stone-800">{{ $cursor->translatedFormat('F Y') }}</h2>
         </div>
-        <button wire:click="openForm" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">+ Appointment</button>
+        <button wire:click="openForm" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">+ قرار ملاقات</button>
     </div>
 
     <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
         <div class="grid grid-cols-7 border-b border-stone-200 bg-stone-50 text-center text-xs font-semibold uppercase tracking-wide text-stone-500">
-            @foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dow)
+            @foreach (['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'] as $dow)
                 <div class="py-2">{{ $dow }}</div>
             @endforeach
         </div>
@@ -52,34 +52,34 @@
     @if ($showForm)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
             <form wire:submit="save" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
-                <h3 class="text-lg font-semibold text-stone-800">New appointment</h3>
+                <h3 class="text-lg font-semibold text-stone-800">قرار ملاقات جدید</h3>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-stone-700">Title</label>
+                    <label class="mb-1 block text-sm font-medium text-stone-700">عنوان</label>
                     <input type="text" wire:model="title" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
                     @error('title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-stone-700">Job (optional)</label>
+                    <label class="mb-1 block text-sm font-medium text-stone-700">کار (اختیاری)</label>
                     <select wire:model="project_id" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
-                        <option value="">— none —</option>
+                        <option value="">— هیچ‌کدام —</option>
                         @foreach ($projects as $p)<option value="{{ $p->id }}">{{ $p->title }}</option>@endforeach
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-stone-700">Start</label>
+                        <label class="mb-1 block text-sm font-medium text-stone-700">شروع</label>
                         <input type="datetime-local" wire:model="starts_at" class="w-full rounded-lg border border-stone-300 px-2 py-2 text-sm">
                         @error('starts_at') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-stone-700">End</label>
+                        <label class="mb-1 block text-sm font-medium text-stone-700">پایان</label>
                         <input type="datetime-local" wire:model="ends_at" class="w-full rounded-lg border border-stone-300 px-2 py-2 text-sm">
                         @error('ends_at') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" wire:click="$set('showForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">Cancel</button>
-                    <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">Save</button>
+                    <button type="button" wire:click="$set('showForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
+                    <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">ذخیره</button>
                 </div>
             </form>
         </div>

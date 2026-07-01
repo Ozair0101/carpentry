@@ -45,6 +45,6 @@ class Index extends Component
         return view('livewire.invoices.index', [
             'invoices' => $invoices,
             'outstanding' => $outstanding,
-        ])->title('Invoices');
+        ])->title('فاکتورها');
     }
 }

@@ -31,6 +31,6 @@ class Index extends Component
             ->paginate(15);
 
         return view('livewire.suppliers.index', ['suppliers' => $suppliers])
-            ->title('Suppliers');
+            ->title('تأمین‌کنندگان');
     }
 }

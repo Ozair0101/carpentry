@@ -30,7 +30,7 @@ class Index extends Component
     {
         if ($this->deletingId) {
             Customer::findOrFail($this->deletingId)->delete();
-            session()->flash('status', 'Customer deleted.');
+            session()->flash('status', 'مشتری حذف شد.');
         }
         $this->deletingId = null;
     }
@@ -49,6 +49,6 @@ class Index extends Component
             ->paginate(12);
 
         return view('livewire.customers.index', ['customers' => $customers])
-            ->title('Customers');
+            ->title('مشتریان');
     }
 }

@@ -40,6 +40,6 @@ class Index extends Component
             ->paginate(15);
 
         return view('livewire.projects.index', ['jobs' => $jobs])
-            ->title('Jobs');
+            ->title('کارها');
     }
 }

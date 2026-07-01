@@ -68,14 +68,14 @@ class Show extends Component
         $this->invoice->syncPaymentStatus();
         $this->showPayment = false;
 
-        session()->flash('status', 'Payment recorded.');
+        session()->flash('status', 'پرداخت ثبت شد.');
     }
 
     public function deletePayment(int $id): void
     {
         $this->invoice->payments()->findOrFail($id)->delete();
         $this->invoice->syncPaymentStatus();
-        session()->flash('status', 'Payment removed.');
+        session()->flash('status', 'پرداخت حذف شد.');
     }
 
     public function setStatus(string $status): void
@@ -88,7 +88,7 @@ class Show extends Component
     public function delete()
     {
         $this->invoice->delete();
-        session()->flash('status', 'Invoice deleted.');
+        session()->flash('status', 'فاکتور حذف شد.');
 
         return $this->redirectRoute('invoices.index', navigate: true);
     }

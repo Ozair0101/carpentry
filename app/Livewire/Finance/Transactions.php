@@ -94,7 +94,7 @@ class Transactions extends Component
         }
 
         $this->showForm = false;
-        session()->flash('status', 'Transaction recorded.');
+        session()->flash('status', 'تراکنش ثبت شد.');
     }
 
     public function delete(int $id): void
@@ -106,7 +106,7 @@ class Transactions extends Component
             Transaction::destroy($tx->transfer_id);
         }
         $tx->delete();
-        session()->flash('status', 'Transaction deleted.');
+        session()->flash('status', 'تراکنش حذف شد.');
     }
 
     public function render()
@@ -128,6 +128,6 @@ class Transactions extends Component
             'categories' => TransactionCategory::orderBy('name')->get(),
             'monthIncome' => $income,
             'monthExpense' => $expense,
-        ])->title('Transactions');
+        ])->title('تراکنش‌ها');
     }
 }

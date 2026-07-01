@@ -73,7 +73,7 @@ class Show extends Component
         $payroll->update(['net_amount' => $payroll->computeNet()]);
 
         $this->showPayrollForm = false;
-        session()->flash('status', 'Payroll run created.');
+        session()->flash('status', 'اجرای لیست حقوق ایجاد شد.');
     }
 
     public function openPay(int $payrollId): void
@@ -115,7 +115,7 @@ class Show extends Component
         $this->recoverAdvances((float) $payroll->advance_deducted);
 
         $this->payingPayrollId = null;
-        session()->flash('status', 'Salary paid.');
+        session()->flash('status', 'معاش پرداخت شد.');
     }
 
     protected function recoverAdvances(float $amount): void
@@ -141,7 +141,7 @@ class Show extends Component
         $payroll = $this->employee->payrolls()->findOrFail($id);
         $payroll->payments()->delete();
         $payroll->delete();
-        session()->flash('status', 'Payroll run removed.');
+        session()->flash('status', 'اجرای لیست حقوق حذف شد.');
     }
 
     // --- Advances ---
@@ -181,7 +181,7 @@ class Show extends Component
         );
 
         $this->showAdvanceForm = false;
-        session()->flash('status', 'Advance recorded.');
+        session()->flash('status', 'مساعده ثبت شد.');
     }
 
     public function deleteAdvance(int $id): void
@@ -189,7 +189,7 @@ class Show extends Component
         $advance = $this->employee->advances()->findOrFail($id);
         $advance->morphMany(\App\Models\Transaction::class, 'sourceable')->delete();
         $advance->delete();
-        session()->flash('status', 'Advance removed.');
+        session()->flash('status', 'مساعده حذف شد.');
     }
 
     public function render()

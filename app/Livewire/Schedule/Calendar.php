@@ -72,13 +72,13 @@ class Calendar extends Component
         ]);
 
         $this->showForm = false;
-        session()->flash('status', 'Appointment added.');
+        session()->flash('status', 'قرار ملاقات افزوده شد.');
     }
 
     public function deleteAppointment(int $id): void
     {
         Appointment::findOrFail($id)->delete();
-        session()->flash('status', 'Appointment removed.');
+        session()->flash('status', 'قرار ملاقات حذف شد.');
     }
 
     public function render()
@@ -103,6 +103,6 @@ class Calendar extends Component
             'days' => $days,
             'appointments' => $appointments,
             'projects' => Project::orderBy('title')->get(['id', 'title']),
-        ])->title('Schedule');
+        ])->title('تقویم');
     }
 }

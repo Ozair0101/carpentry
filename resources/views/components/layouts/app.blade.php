@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-stone-100">
+<html lang="fa" dir="rtl" class="h-full bg-stone-100">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Dashboard' }} · {{ $companyName ?? config('app.name') }}</title>
+    <title>{{ $title ?? 'داشبورد' }} · {{ $companyName ?? config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full text-stone-800 antialiased">
@@ -15,8 +15,8 @@
 
     {{-- Sidebar --}}
     <aside
-        class="fixed inset-y-0 left-0 z-40 w-64 transform bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0"
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        class="fixed inset-y-0 right-0 z-40 w-64 transform bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0"
+        :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
         <div class="flex h-16 items-center gap-2 border-b border-stone-700/60 px-5">
             <span class="text-2xl">🪚</span>
             <span class="text-lg font-semibold tracking-tight text-white">{{ \App\Models\Setting::current()->company_name }}</span>
@@ -24,25 +24,25 @@
         <nav class="flex flex-col gap-1 overflow-y-auto p-3 text-sm">
             @php
                 $groups = [
-                    'Operations' => [
-                        ['dashboard', 'Dashboard', '▦'],
-                        ['customers.index', 'Customers', '👤'],
-                        ['estimates.index', 'Estimates', '📝'],
-                        ['jobs.index', 'Jobs', '🔨'],
-                        ['schedule', 'Schedule', '📅'],
-                        ['invoices.index', 'Invoices', '💵'],
-                        ['materials.index', 'Materials', '📦'],
+                    'عملیات' => [
+                        ['dashboard', 'داشبورد', '▦'],
+                        ['customers.index', 'مشتریان', '👤'],
+                        ['estimates.index', 'برآوردها', '📝'],
+                        ['jobs.index', 'کارها', '🔨'],
+                        ['schedule', 'تقویم', '📅'],
+                        ['invoices.index', 'فاکتورها', '💵'],
+                        ['materials.index', 'مواد', '📦'],
                     ],
-                    'Finance' => [
-                        ['finance', 'Finance', '📊'],
-                        ['accounts.index', 'Accounts', '🏦'],
-                        ['transactions.index', 'Transactions', '💳'],
-                        ['bills.index', 'Bills', '🧾'],
-                        ['suppliers.index', 'Suppliers', '🚚'],
-                        ['employees.index', 'Employees', '👷'],
+                    'امور مالی' => [
+                        ['finance', 'نمای مالی', '📊'],
+                        ['accounts.index', 'حساب‌ها', '🏦'],
+                        ['transactions.index', 'تراکنش‌ها', '💳'],
+                        ['bills.index', 'بل‌ها', '🧾'],
+                        ['suppliers.index', 'تأمین‌کنندگان', '🚚'],
+                        ['employees.index', 'کارمندان', '👷'],
                     ],
-                    'System' => [
-                        ['settings.company', 'Settings', '⚙️'],
+                    'سیستم' => [
+                        ['settings.company', 'تنظیمات', '⚙️'],
                     ],
                 ];
             @endphp
@@ -62,18 +62,18 @@
     </aside>
 
     {{-- Main --}}
-    <div class="lg:pl-64">
+    <div class="lg:pr-64">
         <header class="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-stone-200 bg-white/90 px-4 backdrop-blur lg:px-8">
             <button @click="sidebarOpen = true" class="rounded-lg p-2 text-stone-600 hover:bg-stone-100 lg:hidden">
                 <span class="text-xl">☰</span>
             </button>
-            <h1 class="text-lg font-semibold text-stone-800">{{ $title ?? 'Dashboard' }}</h1>
-            <div class="ml-auto flex items-center gap-4">
+            <h1 class="text-lg font-semibold text-stone-800">{{ $title ?? 'داشبورد' }}</h1>
+            <div class="mr-auto flex items-center gap-4">
                 <span class="hidden text-sm text-stone-500 sm:block">{{ auth()->user()?->name }}</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="rounded-lg px-3 py-1.5 text-sm font-medium text-stone-600 hover:bg-stone-100">
-                        Sign out
+                        خروج
                     </button>
                 </form>
             </div>

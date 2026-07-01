@@ -57,20 +57,20 @@ class Show extends Component
 
         $this->purchase->syncPaymentStatus();
         $this->showPayment = false;
-        session()->flash('status', 'Supplier payment recorded.');
+        session()->flash('status', 'پرداخت تأمین‌کننده ثبت شد.');
     }
 
     public function deletePayment(int $transactionId): void
     {
         $this->purchase->payments()->whereKey($transactionId)->delete();
         $this->purchase->syncPaymentStatus();
-        session()->flash('status', 'Payment removed.');
+        session()->flash('status', 'پرداخت حذف شد.');
     }
 
     public function delete()
     {
         $this->purchase->delete();
-        session()->flash('status', 'Bill deleted.');
+        session()->flash('status', 'بل حذف شد.');
 
         return $this->redirectRoute('bills.index', navigate: true);
     }
@@ -81,6 +81,6 @@ class Show extends Component
 
         return view('livewire.purchases.show', [
             'accounts' => Account::where('is_active', true)->orderBy('name')->get(),
-        ])->title($this->purchase->reference ?: 'Bill #'.$this->purchase->id);
+        ])->title($this->purchase->reference ?: 'بل #'.$this->purchase->id);
     }
 }

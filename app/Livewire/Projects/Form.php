@@ -74,7 +74,7 @@ class Form extends Component
             $project = Project::create($data);
         }
 
-        session()->flash('status', $this->project ? 'Job updated.' : 'Job created.');
+        session()->flash('status', $this->project ? 'کار به‌روزرسانی شد.' : 'کار ایجاد شد.');
 
         return $this->redirectRoute('jobs.show', $project, navigate: true);
     }

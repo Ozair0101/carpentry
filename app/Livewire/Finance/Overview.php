@@ -46,6 +46,6 @@ class Overview extends Component
                 ->whereNotNull('due_date')->orderBy('due_date')->take(6)->get(),
             'invoicesDue' => Invoice::with('customer')->whereIn('status', ['sent', 'partial', 'overdue'])
                 ->orderBy('due_date')->take(6)->get(),
-        ])->title('Finance');
+        ])->title('امور مالی');
     }
 }

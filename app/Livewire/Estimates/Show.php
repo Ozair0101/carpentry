@@ -21,7 +21,7 @@ class Show extends Component
         abort_unless(in_array($status, Estimate::STATUSES, true), 400);
 
         $this->estimate->update(['status' => $status]);
-        session()->flash('status', 'Estimate marked as '.$status.'.');
+        session()->flash('status', 'برآورد علامت‌گذاری شد به عنوان '.$status.'.');
     }
 
     /**
@@ -30,7 +30,7 @@ class Show extends Component
     public function convertToJob()
     {
         if ($this->estimate->project()->exists()) {
-            session()->flash('status', 'This estimate already has a job.');
+            session()->flash('status', 'برای این برآورد قبلاً کار ایجاد شده است.');
 
             return $this->redirectRoute('jobs.show', $this->estimate->project, navigate: true);
         }
@@ -42,13 +42,13 @@ class Show extends Component
         $project = Project::create([
             'customer_id' => $this->estimate->customer_id,
             'estimate_id' => $this->estimate->id,
-            'title' => $this->estimate->notes ? Str::limit($this->estimate->notes, 60) : 'Job from '.$this->estimate->number,
+            'title' => $this->estimate->notes ? Str::limit($this->estimate->notes, 60) : 'کار از روی '.$this->estimate->number,
             'description' => $this->estimate->notes,
             'status' => 'scheduled',
             'budget' => $this->estimate->total,
         ]);
 
-        session()->flash('status', 'Job created from estimate.');
+        session()->flash('status', 'کار از روی برآورد ایجاد شد.');
 
         return $this->redirectRoute('jobs.show', $project, navigate: true);
     }
@@ -56,7 +56,7 @@ class Show extends Component
     public function delete()
     {
         $this->estimate->delete();
-        session()->flash('status', 'Estimate deleted.');
+        session()->flash('status', 'برآورد حذف شد.');
 
         return $this->redirectRoute('estimates.index', navigate: true);
     }

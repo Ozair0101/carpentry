@@ -98,7 +98,7 @@ class Form extends Component
         $estimate->load('items');
         $estimate->recalculate();
 
-        session()->flash('status', $this->estimate ? 'Estimate updated.' : 'Estimate created.');
+        session()->flash('status', $this->estimate ? 'برآورد به‌روزرسانی شد.' : 'برآورد ایجاد شد.');
 
         return $this->redirectRoute('estimates.show', $estimate, navigate: true);
     }

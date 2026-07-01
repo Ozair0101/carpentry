@@ -19,9 +19,25 @@
         'paid' => 'bg-green-100 text-green-700',
         'overdue' => 'bg-red-100 text-red-700',
     ];
+    $labels = [
+        'draft' => 'پیش‌نویس',
+        'sent' => 'ارسال‌شده',
+        'approved' => 'تأییدشده',
+        'rejected' => 'ردشده',
+        'lead' => 'سرنخ',
+        'scheduled' => 'زمان‌بندی‌شده',
+        'in_progress' => 'در حال انجام',
+        'on_hold' => 'معلق',
+        'completed' => 'تکمیل‌شده',
+        'cancelled' => 'لغوشده',
+        'partial' => 'پرداخت جزئی',
+        'paid' => 'پرداخت‌شده',
+        'overdue' => 'سررسید گذشته',
+    ];
     $classes = $map[$status] ?? 'bg-stone-100 text-stone-600';
+    $label = $labels[$status] ?? str_replace('_', ' ', $status);
 @endphp
 
-<span {{ $attributes->merge(['class' => "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize $classes"]) }}>
-    {{ str_replace('_', ' ', $status) }}
+<span {{ $attributes->merge(['class' => "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium $classes"]) }}>
+    {{ $label }}
 </span>

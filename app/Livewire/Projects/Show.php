@@ -156,7 +156,7 @@ class Show extends Component
         $invoice->load('items');
         $invoice->recalculate();
 
-        session()->flash('status', 'Invoice '.$invoice->number.' created from job.');
+        session()->flash('status', 'فاکتور '.$invoice->number.' از روی کار ایجاد شد.');
 
         return $this->redirectRoute('invoices.edit', $invoice, navigate: true);
     }
@@ -164,7 +164,7 @@ class Show extends Component
     public function delete()
     {
         $this->project->delete();
-        session()->flash('status', 'Job deleted.');
+        session()->flash('status', 'کار حذف شد.');
 
         return $this->redirectRoute('jobs.index', navigate: true);
     }

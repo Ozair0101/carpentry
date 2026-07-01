@@ -62,7 +62,7 @@ class Form extends Component
             $employee = Employee::create($data);
         }
 
-        session()->flash('status', $this->employee ? 'Employee updated.' : 'Employee added.');
+        session()->flash('status', $this->employee ? 'کارمند به‌روزرسانی شد.' : 'کارمند افزوده شد.');
 
         return $this->redirectRoute('employees.show', $employee, navigate: true);
     }
@@ -70,6 +70,6 @@ class Form extends Component
     public function render()
     {
         return view('livewire.employees.form')
-            ->title($this->employee ? 'Edit employee' : 'New employee');
+            ->title($this->employee ? 'ویرایش کارمند' : 'کارمند جدید');
     }
 }

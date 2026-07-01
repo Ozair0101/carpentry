@@ -33,6 +33,6 @@ class Index extends Component
             ->paginate(15);
 
         return view('livewire.employees.index', ['employees' => $employees])
-            ->title('Employees');
+            ->title('کارمندان');
     }
 }

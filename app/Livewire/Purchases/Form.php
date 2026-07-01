@@ -86,7 +86,7 @@ class Form extends Component
         $purchase->load('items');
         $purchase->recalculate();
 
-        session()->flash('status', $this->purchase ? 'Bill updated.' : 'Bill created.');
+        session()->flash('status', $this->purchase ? 'بل به‌روزرسانی شد.' : 'بل ایجاد شد.');
 
         return $this->redirectRoute('bills.show', $purchase, navigate: true);
     }
@@ -97,6 +97,6 @@ class Form extends Component
             'suppliers' => Supplier::orderBy('name')->get(['id', 'name']),
             'projects' => Project::orderBy('title')->get(['id', 'title']),
             'materials' => Material::orderBy('name')->get(['id', 'name', 'unit', 'unit_price']),
-        ])->title($this->purchase ? 'Edit bill' : 'New bill');
+        ])->title($this->purchase ? 'ویرایش بل' : 'بل جدید');
     }
 }

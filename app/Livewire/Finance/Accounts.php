@@ -51,7 +51,7 @@ class Accounts extends Component
 
         Account::updateOrCreate(['id' => $this->editingId], $data);
 
-        session()->flash('status', $this->editingId ? 'Account updated.' : 'Account added.');
+        session()->flash('status', $this->editingId ? 'حساب به‌روزرسانی شد.' : 'حساب افزوده شد.');
         $this->showForm = false;
         $this->reset(['editingId', 'name', 'type', 'opening_balance', 'is_default']);
     }
@@ -63,6 +63,6 @@ class Accounts extends Component
         return view('livewire.finance.accounts', [
             'accounts' => $accounts,
             'totalCash' => $accounts->sum(fn (Account $a) => $a->balance()),
-        ])->title('Accounts');
+        ])->title('حساب‌ها');
     }
 }
