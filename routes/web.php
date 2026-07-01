@@ -12,6 +12,7 @@ use App\Livewire\Invoices;
 use App\Livewire\Materials;
 use App\Livewire\Projects;
 use App\Livewire\Purchases;
+use App\Livewire\Reports;
 use App\Livewire\Schedule;
 use App\Livewire\Settings;
 use App\Livewire\Suppliers;
@@ -69,6 +70,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/finance', Finance\Overview::class)->name('finance');
     Route::get('/finance/accounts', Finance\Accounts::class)->name('accounts.index');
     Route::get('/finance/transactions', Finance\Transactions::class)->name('transactions.index');
+
+    // Reports
+    Route::get('/reports/income-statement', Reports\IncomeStatement::class)->name('reports.income');
+    Route::get('/reports/balance-sheet', Reports\BalanceSheet::class)->name('reports.balance');
+    Route::get('/reports/monthly', Reports\Monthly::class)->name('reports.monthly');
 
     // Suppliers
     Route::get('/suppliers', Suppliers\Index::class)->name('suppliers.index');

@@ -41,6 +41,11 @@
                         ['suppliers.index', 'تأمین‌کنندگان', '🚚'],
                         ['employees.index', 'کارمندان', '👷'],
                     ],
+                    'گزارش‌ها' => [
+                        ['reports.income', 'صورت سود و زیان', '📈'],
+                        ['reports.balance', 'بیلانس', '⚖️'],
+                        ['reports.monthly', 'گزارش ماهانه', '🗓️'],
+                    ],
                     'سیستم' => [
                         ['settings.company', 'تنظیمات', '⚙️'],
                     ],
@@ -79,7 +84,7 @@
             </div>
         </header>
 
-        <main class="p-4 lg:p-8">
+        <main class="overflow-x-clip p-4 lg:p-8">
             {{-- Flash toast --}}
             @if (session('status'))
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
