@@ -62,7 +62,7 @@
         </div>
 
         <div class="flex justify-end">
-            <button type="submit" class="rounded-lg bg-amber-600 px-5 py-2 text-sm font-semibold text-white hover:bg-amber-700">ذخیره تنظیمات</button>
+            <x-save-button label="ذخیره تنظیمات" busy="در حال ذخیره تنظیمات…" />
         </div>
     </form>
 </div>

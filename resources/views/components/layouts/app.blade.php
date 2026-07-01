@@ -8,6 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full text-stone-800 antialiased">
+<div id="global-progress"></div>
 <div x-data="{ sidebarOpen: false }" class="min-h-full">
     {{-- Mobile backdrop --}}
     <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"

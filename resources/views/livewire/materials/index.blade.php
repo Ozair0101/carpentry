@@ -30,7 +30,7 @@
                 <input type="text" wire:model="category" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
             </div>
             <div class="flex items-end gap-2 sm:col-span-5">
-                <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">ذخیره</button>
+                <x-save-button class="!px-4" />
                 <button type="button" wire:click="$set('showForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-200">لغو</button>
             </div>
         </form>

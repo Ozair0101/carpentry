@@ -29,7 +29,7 @@
                 <label class="flex items-center gap-2 text-sm text-stone-600"><input type="checkbox" wire:model="is_default" class="rounded border-stone-300 text-amber-600"> پیش‌فرض</label>
             </div>
             <div class="sm:col-span-4 flex gap-2">
-                <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">ذخیره</button>
+                <x-save-button class="!px-4" />
                 <button type="button" wire:click="$set('showForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-200">لغو</button>
             </div>
         </form>

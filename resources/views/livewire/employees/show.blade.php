@@ -100,7 +100,7 @@
                 <p class="text-xs text-stone-500">مساعده باقی‌مانده: {{ Format::money($employee->advanceBalance()) }}</p>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" wire:click="$set('showPayrollForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
-                    <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">ایجاد اجرا</button>
+                    <x-save-button class="!px-4" target="savePayroll" label="ایجاد اجرا" busy="در حال ثبت…" />
                 </div>
             </form>
         </div>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" wire:click="$set('showAdvanceForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
-                    <button type="submit" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">پرداخت مساعده</button>
+                    <x-save-button class="!px-4" target="saveAdvance" label="پرداخت مساعده" busy="در حال ثبت…" />
                 </div>
             </form>
         </div>

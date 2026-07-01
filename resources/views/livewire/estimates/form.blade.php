@@ -52,7 +52,7 @@
 
         <div class="flex items-center justify-end gap-3">
             <a href="{{ route('estimates.index') }}" wire:navigate class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</a>
-            <button type="submit" class="rounded-lg bg-amber-600 px-5 py-2 text-sm font-semibold text-white hover:bg-amber-700">ذخیره برآورد</button>
+            <x-save-button label="ذخیره برآورد" />
         </div>
     </form>
 </div>

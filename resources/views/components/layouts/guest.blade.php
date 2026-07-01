@@ -8,6 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="flex h-full items-center justify-center p-4 text-stone-800 antialiased">
+    <div id="global-progress"></div>
     <div class="w-full max-w-sm">
         {{ $slot }}
     </div>
