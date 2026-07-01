@@ -10,6 +10,7 @@ use App\Livewire\Estimates;
 use App\Livewire\Finance;
 use App\Livewire\Invoices;
 use App\Livewire\Materials;
+use App\Livewire\Payroll;
 use App\Livewire\Projects;
 use App\Livewire\Purchases;
 use App\Livewire\Reports;
@@ -93,6 +94,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/employees/create', Employees\Form::class)->name('employees.create');
     Route::get('/employees/{employee}/edit', Employees\Form::class)->name('employees.edit');
     Route::get('/employees/{employee}', Employees\Show::class)->name('employees.show');
+    Route::get('/payroll', Payroll\Index::class)->name('payroll.index');
 
     // Settings
     Route::get('/settings', Settings\Company::class)->name('settings.company');

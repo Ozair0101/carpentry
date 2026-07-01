@@ -38,4 +38,26 @@ class Employee extends Model
     {
         return (float) $this->payrolls()->where('status', 'pending')->sum('net_amount');
     }
+
+    /**
+     * Recover a deducted advance against outstanding balances, oldest first.
+     * Called after a payroll that deducted an advance is actually paid.
+     */
+    public function recoverAdvances(float $amount): void
+    {
+        if ($amount <= 0) {
+            return;
+        }
+
+        foreach ($this->advances()->reorder('advanced_on')->get() as $advance) {
+            if ($amount <= 0) {
+                break;
+            }
+            $take = min($advance->outstanding(), $amount);
+            if ($take > 0) {
+                $advance->increment('recovered', $take);
+                $amount -= $take;
+            }
+        }
+    }
 }

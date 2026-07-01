@@ -41,6 +41,7 @@
                         ['bills.index', 'بل‌ها', '🧾'],
                         ['suppliers.index', 'تأمین‌کنندگان', '🚚'],
                         ['employees.index', 'کارمندان', '👷'],
+                        ['payroll.index', 'لیست حقوق', '💰'],
                     ],
                     'گزارش‌ها' => [
                         ['reports.income', 'صورت سود و زیان', '📈'],
