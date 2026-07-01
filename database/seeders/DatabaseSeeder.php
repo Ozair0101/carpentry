@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
 use App\Models\Customer;
+use App\Models\Employee;
 use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Invoice;
@@ -12,7 +14,11 @@ use App\Models\Payment;
 use App\Models\Project;
 use App\Models\ProjectExpense;
 use App\Models\ProjectTask;
+use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use App\Models\Setting;
+use App\Models\Supplier;
+use App\Models\TransactionCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +54,22 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Carpentry labour', 'unit' => 'hr', 'unit_price' => 55.00, 'category' => 'Labour'],
             ['name' => 'Wood finish / varnish (L)', 'unit' => 'L', 'unit_price' => 24.00, 'category' => 'Finishing'],
         ])->map(fn ($m) => Material::create($m));
+
+        // Money accounts (always seeded so finance works out of the box)
+        Account::updateOrCreate(['name' => 'Cash on hand'], ['type' => 'cash', 'opening_balance' => 2000, 'is_default' => true]);
+        Account::updateOrCreate(['name' => 'Business bank'], ['type' => 'bank', 'opening_balance' => 15000]);
+
+        // Income / expense categories
+        collect([
+            ['name' => 'Job income', 'kind' => 'income'],
+            ['name' => 'Other income', 'kind' => 'income'],
+            ['name' => 'Materials', 'kind' => 'expense'],
+            ['name' => 'Wages & salaries', 'kind' => 'expense'],
+            ['name' => 'Rent', 'kind' => 'expense'],
+            ['name' => 'Utilities', 'kind' => 'expense'],
+            ['name' => 'Tools & equipment', 'kind' => 'expense'],
+            ['name' => 'Transport', 'kind' => 'expense'],
+        ])->each(fn ($c) => TransactionCategory::firstOrCreate(['name' => $c['name']], $c));
 
         if (! app()->environment('production')) {
             $this->seedDemo($materials);
@@ -124,5 +146,36 @@ class DatabaseSeeder extends Seeder
         $invoice->recalculate();
         Payment::create(['invoice_id' => $invoice->id, 'amount' => 200.00, 'paid_on' => now()->subDays(15), 'method' => 'bank']);
         $invoice->syncPaymentStatus();
+
+        // --- Finance demo: a supplier with an outstanding bill ---
+        $supplier = Supplier::create([
+            'name' => 'Woodville Timber Co.',
+            'company' => 'Woodville Timber Co.',
+            'phone' => '(555) 444-2200',
+            'email' => 'sales@woodvilletimber.test',
+        ]);
+        $bill = Purchase::create([
+            'supplier_id' => $supplier->id,
+            'project_id' => $project->id,
+            'reference' => 'WT-3391',
+            'status' => 'unpaid',
+            'bill_date' => now()->subDays(6),
+            'due_date' => now()->addDays(8),
+            'tax_total' => 24.00,
+        ]);
+        PurchaseItem::create(['purchase_id' => $bill->id, 'description' => 'Oak boards (bulk)', 'qty' => 24, 'unit' => 'm', 'unit_price' => 12.50, 'line_total' => 300.00, 'position' => 1]);
+        $bill->load('items');
+        $bill->recalculate();
+
+        // --- Finance demo: employees, payroll and an advance ---
+        $james = Employee::create(['name' => 'James Cole', 'role' => 'Lead carpenter', 'phone' => '(555) 100-2000', 'salary_type' => 'monthly', 'salary_rate' => 3200, 'joined_on' => now()->subYears(2), 'is_active' => true]);
+        Employee::create(['name' => 'Mia Torres', 'role' => 'Finisher', 'salary_type' => 'daily', 'salary_rate' => 140, 'joined_on' => now()->subMonths(8), 'is_active' => true]);
+
+        $james->advances()->create(['amount' => 500, 'recovered' => 0, 'advanced_on' => now()->subDays(10), 'note' => 'Personal advance']);
+        $james->payrolls()->create([
+            'period_label' => now()->subMonth()->format('F Y'),
+            'base_amount' => 3200, 'bonus' => 0, 'deductions' => 0, 'advance_deducted' => 0,
+            'net_amount' => 3200, 'status' => 'pending',
+        ]);
     }
 }

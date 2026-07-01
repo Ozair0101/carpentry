@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Invoices;
 
+use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,8 @@ class Show extends Component
 
     public string $payMethod = 'cash';
 
+    public $payAccountId = null;
+
     public string $payReference = '';
 
     public function mount(Invoice $invoice): void
@@ -34,6 +37,7 @@ class Show extends Component
         $this->payAmount = $this->invoice->balance();
         $this->payDate = Carbon::today()->format('Y-m-d');
         $this->payMethod = 'cash';
+        $this->payAccountId = Account::default()?->id;
         $this->payReference = '';
         $this->showPayment = true;
     }
@@ -44,6 +48,7 @@ class Show extends Component
             'payAmount' => 'required|numeric|min:0.01',
             'payDate' => 'required|date',
             'payMethod' => 'required|in:'.implode(',', Payment::METHODS),
+            'payAccountId' => 'nullable|exists:accounts,id',
             'payReference' => 'nullable|string|max:255',
         ]);
 
@@ -56,6 +61,7 @@ class Show extends Component
             'amount' => (float) $this->payAmount,
             'paid_on' => $this->payDate,
             'method' => $this->payMethod,
+            'account_id' => $this->payAccountId ?: null,
             'reference' => $this->payReference ?: null,
         ]);
 
@@ -91,7 +97,8 @@ class Show extends Component
     {
         $this->invoice->load(['customer', 'items', 'payments', 'project']);
 
-        return view('livewire.invoices.show')
-            ->title($this->invoice->number);
+        return view('livewire.invoices.show', [
+            'accounts' => Account::where('is_active', true)->orderBy('name')->get(),
+        ])->title($this->invoice->number);
     }
 }

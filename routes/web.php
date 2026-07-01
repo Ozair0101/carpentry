@@ -5,12 +5,16 @@ use App\Http\Controllers\InvoicePdfController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Customers;
 use App\Livewire\Dashboard;
+use App\Livewire\Employees;
 use App\Livewire\Estimates;
+use App\Livewire\Finance;
 use App\Livewire\Invoices;
 use App\Livewire\Materials;
 use App\Livewire\Projects;
+use App\Livewire\Purchases;
 use App\Livewire\Schedule;
 use App\Livewire\Settings;
+use App\Livewire\Suppliers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -60,6 +64,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoices/{invoice}/edit', Invoices\Form::class)->name('invoices.edit');
     Route::get('/invoices/{invoice}', Invoices\Show::class)->name('invoices.show');
     Route::get('/invoices/{invoice}/pdf', InvoicePdfController::class)->name('invoices.pdf');
+
+    // Finance
+    Route::get('/finance', Finance\Overview::class)->name('finance');
+    Route::get('/finance/accounts', Finance\Accounts::class)->name('accounts.index');
+    Route::get('/finance/transactions', Finance\Transactions::class)->name('transactions.index');
+
+    // Suppliers
+    Route::get('/suppliers', Suppliers\Index::class)->name('suppliers.index');
+    Route::get('/suppliers/create', Suppliers\Form::class)->name('suppliers.create');
+    Route::get('/suppliers/{supplier}/edit', Suppliers\Form::class)->name('suppliers.edit');
+    Route::get('/suppliers/{supplier}', Suppliers\Show::class)->name('suppliers.show');
+
+    // Bills / purchases (payables)
+    Route::get('/bills', Purchases\Index::class)->name('bills.index');
+    Route::get('/bills/create', Purchases\Form::class)->name('bills.create');
+    Route::get('/bills/{purchase}/edit', Purchases\Form::class)->name('bills.edit');
+    Route::get('/bills/{purchase}', Purchases\Show::class)->name('bills.show');
+
+    // Employees & payroll
+    Route::get('/employees', Employees\Index::class)->name('employees.index');
+    Route::get('/employees/create', Employees\Form::class)->name('employees.create');
+    Route::get('/employees/{employee}/edit', Employees\Form::class)->name('employees.edit');
+    Route::get('/employees/{employee}', Employees\Show::class)->name('employees.show');
 
     // Settings
     Route::get('/settings', Settings\Company::class)->name('settings.company');

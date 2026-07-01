@@ -109,6 +109,15 @@
                         @foreach (\App\Models\Payment::METHODS as $m)<option value="{{ $m }}">{{ ucfirst($m) }}</option>@endforeach
                     </select>
                 </div>
+                @if ($accounts->isNotEmpty())
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-stone-700">Deposit to account</label>
+                        <select wire:model="payAccountId" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                            <option value="">— none —</option>
+                            @foreach ($accounts as $a)<option value="{{ $a->id }}">{{ $a->name }}</option>@endforeach
+                        </select>
+                    </div>
+                @endif
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">Reference (optional)</label>
                     <input type="text" wire:model="payReference" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">

@@ -21,27 +21,42 @@
             <span class="text-2xl">🪚</span>
             <span class="text-lg font-semibold tracking-tight text-white">{{ \App\Models\Setting::current()->company_name }}</span>
         </div>
-        <nav class="flex flex-col gap-1 p-3 text-sm">
+        <nav class="flex flex-col gap-1 overflow-y-auto p-3 text-sm">
             @php
-                $nav = [
-                    ['dashboard', 'Dashboard', '▦'],
-                    ['customers.index', 'Customers', '👤'],
-                    ['estimates.index', 'Estimates', '📝'],
-                    ['jobs.index', 'Jobs', '🔨'],
-                    ['schedule', 'Schedule', '📅'],
-                    ['invoices.index', 'Invoices', '💵'],
-                    ['materials.index', 'Materials', '📦'],
-                    ['settings.company', 'Settings', '⚙️'],
+                $groups = [
+                    'Operations' => [
+                        ['dashboard', 'Dashboard', '▦'],
+                        ['customers.index', 'Customers', '👤'],
+                        ['estimates.index', 'Estimates', '📝'],
+                        ['jobs.index', 'Jobs', '🔨'],
+                        ['schedule', 'Schedule', '📅'],
+                        ['invoices.index', 'Invoices', '💵'],
+                        ['materials.index', 'Materials', '📦'],
+                    ],
+                    'Finance' => [
+                        ['finance', 'Finance', '📊'],
+                        ['accounts.index', 'Accounts', '🏦'],
+                        ['transactions.index', 'Transactions', '💳'],
+                        ['bills.index', 'Bills', '🧾'],
+                        ['suppliers.index', 'Suppliers', '🚚'],
+                        ['employees.index', 'Employees', '👷'],
+                    ],
+                    'System' => [
+                        ['settings.company', 'Settings', '⚙️'],
+                    ],
                 ];
             @endphp
-            @foreach ($nav as [$route, $label, $icon])
-                @php $active = request()->routeIs(\Illuminate\Support\Str::before($route, '.').'*') || request()->routeIs($route); @endphp
-                <a href="{{ route($route) }}" wire:navigate
-                   class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition
-                          {{ $active ? 'bg-amber-600 text-white' : 'text-stone-300 hover:bg-stone-800 hover:text-white' }}">
-                    <span class="w-5 text-center">{{ $icon }}</span>
-                    {{ $label }}
-                </a>
+            @foreach ($groups as $groupLabel => $items)
+                <p class="mt-3 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">{{ $groupLabel }}</p>
+                @foreach ($items as [$route, $label, $icon])
+                    @php $active = request()->routeIs(\Illuminate\Support\Str::before($route, '.').'*') || request()->routeIs($route); @endphp
+                    <a href="{{ route($route) }}" wire:navigate
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition
+                              {{ $active ? 'bg-amber-600 text-white' : 'text-stone-300 hover:bg-stone-800 hover:text-white' }}">
+                        <span class="w-5 text-center">{{ $icon }}</span>
+                        {{ $label }}
+                    </a>
+                @endforeach
             @endforeach
         </nav>
     </aside>
