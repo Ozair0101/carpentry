@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Estimate extends Model
 {
@@ -32,9 +33,9 @@ class Estimate extends Model
         return $this->hasMany(EstimateItem::class)->orderBy('position');
     }
 
-    public function project(): BelongsTo
+    public function project(): HasOne
     {
-        return $this->belongsTo(Project::class);
+        return $this->hasOne(Project::class);
     }
 
     /**
