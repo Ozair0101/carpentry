@@ -54,8 +54,8 @@
 
     {{-- Delete confirmation --}}
     @if ($deletingId)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
-            <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-900/50 p-4">
+            <div class="my-4 max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">مشتری حذف شود؟</h3>
                 <p class="mt-2 text-sm text-stone-500">این کار برآوردها، کارها و فاکتورهای این مشتری را نیز حذف می‌کند. این عمل قابل بازگشت نیست.</p>
                 <div class="mt-6 flex justify-end gap-3">

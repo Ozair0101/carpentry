@@ -50,8 +50,8 @@
 
     {{-- Add appointment modal --}}
     @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
-            <form wire:submit="save" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-900/50 p-4">
+            <form wire:submit="save" class="my-4 max-h-[90vh] w-full max-w-sm space-y-4 overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">قرار ملاقات جدید</h3>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">عنوان</label>

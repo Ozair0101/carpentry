@@ -117,8 +117,8 @@
 
     {{-- Payroll run modal --}}
     @if ($showPayrollForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
-            <form wire:submit="savePayroll" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-900/50 p-4">
+            <form wire:submit="savePayroll" class="my-4 max-h-[90vh] w-full max-w-sm space-y-4 overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">اجرای لیست حقوق</h3>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">کارمند</label>
@@ -181,8 +181,8 @@
 
     {{-- Pay salary modal --}}
     @if ($payingPayrollId)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
-            <form wire:submit="payPayroll" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-900/50 p-4">
+            <form wire:submit="payPayroll" class="my-4 max-h-[90vh] w-full max-w-sm space-y-4 overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">پرداخت معاش</h3>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">مبلغ پرداخت</label>
@@ -219,8 +219,8 @@
 
     {{-- Advance modal --}}
     @if ($showAdvanceForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4">
-            <form wire:submit="saveAdvance" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-stone-900/50 p-4">
+            <form wire:submit="saveAdvance" class="my-4 max-h-[90vh] w-full max-w-sm space-y-4 overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">ثبت مساعده</h3>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">کارمند</label>
