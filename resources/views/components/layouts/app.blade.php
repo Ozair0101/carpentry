@@ -16,13 +16,13 @@
 
     {{-- Sidebar --}}
     <aside
-        class="fixed inset-y-0 right-0 z-40 w-64 transform bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0"
+        class="fixed inset-y-0 right-0 z-40 flex w-64 transform flex-col bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0"
         :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
-        <div class="flex h-16 items-center gap-2 border-b border-stone-700/60 px-5">
+        <div class="flex h-16 shrink-0 items-center gap-2 border-b border-stone-700/60 px-5">
             <span class="text-2xl">🪚</span>
             <span class="text-lg font-semibold tracking-tight text-white">{{ \App\Models\Setting::current()->company_name }}</span>
         </div>
-        <nav class="flex flex-col gap-1 overflow-y-auto p-3 text-sm">
+        <nav class="flex flex-1 flex-col gap-1 overflow-y-auto p-3 text-sm">
             @php
                 $groups = [
                     'عملیات' => [
