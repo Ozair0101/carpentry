@@ -76,7 +76,9 @@
             @foreach ($groups as $groupLabel => $items)
                 <p class="mt-3 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">{{ $groupLabel }}</p>
                 @foreach ($items as [$route, $label, $icon])
-                    @php $active = request()->routeIs(\Illuminate\Support\Str::before($route, '.').'*') || request()->routeIs($route); @endphp
+                    @php $active = \Illuminate\Support\Str::endsWith($route, '.index')
+                        ? request()->routeIs(\Illuminate\Support\Str::beforeLast($route, '.').'*')
+                        : request()->routeIs($route); @endphp
                     <a href="{{ route($route) }}" wire:navigate
                        class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium transition
                               {{ $active ? 'bg-amber-600 text-white' : 'text-stone-300 hover:bg-stone-800 hover:text-white' }}">
