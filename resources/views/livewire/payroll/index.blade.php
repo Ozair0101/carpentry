@@ -144,9 +144,36 @@
                     <span class="text-stone-600">خالص قابل پرداخت</span>
                     <span class="text-base font-bold text-stone-800">{{ Format::money($this->previewNet()) }}</span>
                 </div>
+
+                {{-- Pay immediately: generate + pay in one step --}}
+                <div class="space-y-3 rounded-lg border border-stone-200 p-3">
+                    <label class="flex items-center gap-2 text-sm font-medium text-stone-700">
+                        <input type="checkbox" wire:model.live="payNow" class="rounded border-stone-300 text-green-600 focus:ring-green-500">
+                        پرداخت فوری معاش
+                    </label>
+                    @if ($payNow)
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-stone-700">پرداخت از حساب</label>
+                            <select wire:model="payAccountId" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                                <option value="">— انتخاب کنید —</option>
+                                @foreach ($accounts as $a)<option value="{{ $a->id }}">{{ $a->name }}</option>@endforeach
+                            </select>
+                            @error('payAccountId') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-stone-700">تاریخ پرداخت</label>
+                            <input type="date" wire:model="payDate" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                            @error('payDate') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>
+                        <p class="text-xs text-stone-400">خالص معاش کامل از این حساب پرداخت می‌شود. برای پرداخت جزئی، این گزینه را بردارید و بعداً «پرداخت» را بزنید.</p>
+                    @else
+                        <p class="text-xs text-stone-400">فقط اجرای لیست حقوق ثبت می‌شود؛ پرداخت را بعداً از دکمهٔ «پرداخت» انجام دهید.</p>
+                    @endif
+                </div>
+
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" wire:click="$set('showPayrollForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
-                    <x-save-button class="!px-4" target="savePayroll" label="ایجاد اجرا" busy="در حال ثبت…" />
+                    <x-save-button class="!px-4" target="savePayroll" label="{{ $payNow ? 'ایجاد و پرداخت' : 'ایجاد اجرا' }}" busy="در حال ثبت…" />
                 </div>
             </form>
         </div>

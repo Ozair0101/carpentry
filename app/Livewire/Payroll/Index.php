@@ -29,6 +29,7 @@ class Index extends Component
     public $payrollOvertime = 0;
     public $payrollDeductions = 0;
     public $payrollAdvance = 0;
+    public bool $payNow = true; // generate + pay in one step
 
     // --- Pay-salary modal ---
     public ?int $payingPayrollId = null;
@@ -51,6 +52,10 @@ class Index extends Component
         $this->reset(['payrollBonus', 'payrollOvertime', 'payrollDeductions', 'payrollAdvance']);
         $this->prEmployeeId = $employeeId;
         $this->periodLabel = Carbon::now()->translatedFormat('F Y');
+        // Seed the "pay immediately" fields so run + pay can happen in one step.
+        $this->payNow = true;
+        $this->payAccountId = Account::default()?->id;
+        $this->payDate = Carbon::today()->format('Y-m-d');
         $this->syncPayrollDefaults();
         $this->showPayrollForm = true;
     }
@@ -80,14 +85,20 @@ class Index extends Component
 
     public function savePayroll(): void
     {
-        $this->validate([
+        $rules = [
             'prEmployeeId' => 'required|exists:employees,id',
             'periodLabel' => 'required|string|max:255',
             'payrollBase' => 'required|numeric|min:0',
             'payrollBonus' => 'required|numeric|min:0',
             'payrollDeductions' => 'required|numeric|min:0',
             'payrollAdvance' => 'required|numeric|min:0',
-        ]);
+        ];
+        // When paying immediately, the account/date become required too.
+        if ($this->payNow) {
+            $rules['payAccountId'] = 'required|exists:accounts,id';
+            $rules['payDate'] = 'required|date';
+        }
+        $this->validate($rules);
 
         $employee = Employee::findOrFail($this->prEmployeeId);
         $payroll = $employee->payrolls()->create([
@@ -101,8 +112,47 @@ class Index extends Component
         ]);
         $payroll->update(['net_amount' => $payroll->computeNet()]);
 
+        $paidNow = $this->payNow && $payroll->net_amount > 0.001;
+        if ($paidNow) {
+            $payroll->load('employee');
+            $this->applyPayment($payroll, (float) $payroll->net_amount, (int) $this->payAccountId, $this->payDate);
+        }
+
         $this->showPayrollForm = false;
-        session()->flash('status', 'اجرای لیست حقوق ایجاد شد.');
+        session()->flash('status', $paidNow
+            ? 'لیست حقوق ایجاد و معاش پرداخت شد.'
+            : 'اجرای لیست حقوق ایجاد شد.');
+    }
+
+    /**
+     * Record a salary payment against a payroll run: post the ledger entry,
+     * refresh its paid status and recover any deducted advances once settled.
+     * Shared by the immediate "pay now" path and the standalone pay modal.
+     */
+    protected function applyPayment(Payroll $payroll, float $amount, int $accountId, string $date, ?string $note = null): void
+    {
+        $wasPaid = $payroll->status === 'paid';
+
+        Ledger::record(
+            direction: 'out',
+            amount: $amount,
+            accountId: $accountId,
+            source: $payroll,
+            attributes: [
+                'occurred_on' => $date,
+                'description' => 'Salary '.$payroll->period_label.' — '.$payroll->employee->name,
+                'reference' => $note ?: null,
+            ],
+        );
+
+        $payroll->paid_on = $date;
+        $payroll->save();
+        $payroll->syncPaymentStatus();
+
+        // Recover deducted advances once the salary is fully settled.
+        if (! $wasPaid && $payroll->status === 'paid') {
+            $payroll->employee->recoverAdvances((float) $payroll->advance_deducted);
+        }
     }
 
     public function openPay(int $payrollId): void
@@ -125,28 +175,7 @@ class Index extends Component
         ]);
 
         $payroll = Payroll::with('employee')->findOrFail($this->payingPayrollId);
-        $wasPaid = $payroll->status === 'paid';
-
-        Ledger::record(
-            direction: 'out',
-            amount: (float) $this->payAmount,
-            accountId: (int) $this->payAccountId,
-            source: $payroll,
-            attributes: [
-                'occurred_on' => $this->payDate,
-                'description' => 'Salary '.$payroll->period_label.' — '.$payroll->employee->name,
-                'reference' => $this->payNote ?: null,
-            ],
-        );
-
-        $payroll->paid_on = $this->payDate;
-        $payroll->save();
-        $payroll->syncPaymentStatus();
-
-        // Recover deducted advances once the salary is fully settled.
-        if (! $wasPaid && $payroll->status === 'paid') {
-            $payroll->employee->recoverAdvances((float) $payroll->advance_deducted);
-        }
+        $this->applyPayment($payroll, (float) $this->payAmount, (int) $this->payAccountId, $this->payDate, $this->payNote);
 
         $this->payingPayrollId = null;
 
