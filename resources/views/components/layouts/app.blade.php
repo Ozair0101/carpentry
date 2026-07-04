@@ -16,7 +16,7 @@
 
     {{-- Sidebar --}}
     <aside
-        class="fixed inset-y-0 right-0 z-40 flex w-56    transform flex-col bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0"
+        class="fixed inset-y-0 right-0 z-40 flex w-56    transform flex-col bg-stone-900 text-stone-200 transition-transform duration-200 lg:translate-x-0 print:hidden"
         :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
         <div class="flex h-16 shrink-0 items-center gap-2 border-b border-stone-700/60 px-5">
             <span class="text-2xl">🪚</span>
@@ -93,8 +93,8 @@
     </aside>
 
     {{-- Main --}}
-    <div class="lg:pr-64">
-        <header class="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-stone-200 bg-white/90 px-4 backdrop-blur lg:px-8">
+    <div class="lg:pr-64 print:pr-0">
+        <header class="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-stone-200 bg-white/90 px-4 backdrop-blur lg:px-8 print:hidden">
             <button @click="sidebarOpen = true" class="rounded-lg p-2 text-stone-600 hover:bg-stone-100 lg:hidden">
                 <span class="text-xl">☰</span>
             </button>
@@ -110,7 +110,7 @@
             </div>
         </header>
 
-        <main class="overflow-x-clip p-4 lg:p-8">
+        <main class="overflow-x-clip p-4 lg:p-8 print:p-0">
             {{-- Flash toast --}}
             @if (session('status'))
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"

@@ -74,3 +74,59 @@
         opacity 0.3s ease;
     pointer-events: none;
 }
+
+/* ------------------------------------------------------------------ *
+ | Print: drop the app chrome so rich pages (reports) that call
+ | window.print() render only their content on clean paper. The
+ | sidebar/header are hidden via `print:hidden` in the layout; this
+ | handles the page-level resets and colour fidelity.
+ * ------------------------------------------------------------------ */
+@media print {
+    @page {
+        size: A4;
+        margin: 14mm;
+    }
+
+    html,
+    body {
+        background: #fff !important;
+        height: auto !important;
+    }
+
+    /* Render background fills / coloured badges as shown on screen. */
+    *,
+    *::before,
+    *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    #global-progress {
+        display: none !important;
+    }
+
+    /* Nothing should be clipped or trapped in a scroll area on paper. */
+    .overflow-hidden,
+    .overflow-x-clip,
+    .overflow-y-auto,
+    .overflow-auto {
+        overflow: visible !important;
+    }
+
+    /* Flatten screen-only depth; keep the content structure. */
+    [class*='shadow'] {
+        box-shadow: none !important;
+    }
+
+    /* Give report cards a crisp edge and keep them off page seams. */
+    .rounded-2xl,
+    .rounded-xl {
+        border-radius: 0 !important;
+    }
+
+    /* Keep the assets/liabilities columns and small report cards intact;
+       long list tables are printed via the iframe helper, not this path. */
+    main .grid > div {
+        break-inside: avoid;
+    }
+}
