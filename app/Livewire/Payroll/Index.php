@@ -26,13 +26,16 @@ class Index extends Component
     public string $periodLabel = '';
     public $payrollBase = 0;
     public $payrollBonus = 0;
+    public $payrollOvertime = 0;
     public $payrollDeductions = 0;
     public $payrollAdvance = 0;
 
     // --- Pay-salary modal ---
     public ?int $payingPayrollId = null;
+    public $payAmount = 0;
     public $payAccountId = null;
     public string $payDate = '';
+    public string $payNote = '';
 
     // --- Advance modal ---
     public bool $showAdvanceForm = false;
@@ -45,11 +48,21 @@ class Index extends Component
     /* ------------------------------- Payroll ------------------------------ */
     public function openPayroll(?int $employeeId = null): void
     {
-        $this->reset(['payrollBonus', 'payrollDeductions', 'payrollAdvance']);
+        $this->reset(['payrollBonus', 'payrollOvertime', 'payrollDeductions', 'payrollAdvance']);
         $this->prEmployeeId = $employeeId;
         $this->periodLabel = Carbon::now()->translatedFormat('F Y');
         $this->syncPayrollDefaults();
         $this->showPayrollForm = true;
+    }
+
+    /** Live net preview shown in the run modal. */
+    public function previewNet(): float
+    {
+        return round(
+            (float) $this->payrollBase + (float) $this->payrollBonus + (float) $this->payrollOvertime
+            - (float) $this->payrollDeductions - (float) $this->payrollAdvance,
+            2
+        );
     }
 
     /** When the employee changes, prefill base pay and suggested advance recovery. */
@@ -81,6 +94,7 @@ class Index extends Component
             'period_label' => $this->periodLabel,
             'base_amount' => (float) $this->payrollBase,
             'bonus' => (float) $this->payrollBonus,
+            'overtime' => (float) $this->payrollOvertime,
             'deductions' => (float) $this->payrollDeductions,
             'advance_deducted' => (float) $this->payrollAdvance,
             'status' => 'pending',
@@ -93,42 +107,53 @@ class Index extends Component
 
     public function openPay(int $payrollId): void
     {
+        $payroll = Payroll::findOrFail($payrollId);
         $this->payingPayrollId = $payrollId;
+        $this->payAmount = $payroll->balance();
         $this->payAccountId = Account::default()?->id;
         $this->payDate = Carbon::today()->format('Y-m-d');
+        $this->payNote = '';
     }
 
     public function payPayroll(): void
     {
         $this->validate([
+            'payAmount' => 'required|numeric|min:0.01',
             'payAccountId' => 'required|exists:accounts,id',
             'payDate' => 'required|date',
+            'payNote' => 'nullable|string|max:255',
         ]);
 
         $payroll = Payroll::with('employee')->findOrFail($this->payingPayrollId);
-
-        if ($payroll->status === 'paid') {
-            $this->payingPayrollId = null;
-
-            return;
-        }
+        $wasPaid = $payroll->status === 'paid';
 
         Ledger::record(
             direction: 'out',
-            amount: (float) $payroll->net_amount,
+            amount: (float) $this->payAmount,
             accountId: (int) $this->payAccountId,
             source: $payroll,
             attributes: [
                 'occurred_on' => $this->payDate,
                 'description' => 'Salary '.$payroll->period_label.' — '.$payroll->employee->name,
+                'reference' => $this->payNote ?: null,
             ],
         );
 
-        $payroll->update(['status' => 'paid', 'paid_on' => $this->payDate]);
-        $payroll->employee->recoverAdvances((float) $payroll->advance_deducted);
+        $payroll->paid_on = $this->payDate;
+        $payroll->save();
+        $payroll->syncPaymentStatus();
+
+        // Recover deducted advances once the salary is fully settled.
+        if (! $wasPaid && $payroll->status === 'paid') {
+            $payroll->employee->recoverAdvances((float) $payroll->advance_deducted);
+        }
 
         $this->payingPayrollId = null;
-        session()->flash('status', 'معاش پرداخت شد.');
+
+        $balance = $payroll->balance();
+        session()->flash('status', $balance > 0.001
+            ? 'پرداخت جزئی ثبت شد. باقی‌مانده بدهی به کارمند: '.\App\Support\Format::money($balance)
+            : 'معاش به‌طور کامل پرداخت شد.');
     }
 
     public function deletePayroll(int $id): void
@@ -197,9 +222,9 @@ class Index extends Component
         return view('livewire.payroll.index', [
             'employees' => Employee::orderBy('name')->get(),
             'accounts' => Account::where('is_active', true)->orderBy('name')->get(),
-            'payrolls' => Payroll::with('employee')->latest('period_end')->latest('id')->paginate(15),
+            'payrolls' => Payroll::with(['employee', 'payments'])->latest('period_end')->latest('id')->paginate(15),
             'advances' => $advances,
-            'pendingTotal' => (float) Payroll::where('status', 'pending')->sum('net_amount'),
+            'pendingTotal' => Payroll::whereIn('status', ['pending', 'partial'])->get()->sum(fn (Payroll $p) => max(0, $p->balance())),
             'advancesOutstanding' => $advances->sum(fn (EmployeeAdvance $a) => max(0, $a->outstanding())),
         ])->title('لیست حقوق');
     }

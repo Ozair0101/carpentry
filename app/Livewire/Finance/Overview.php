@@ -24,7 +24,8 @@ class Overview extends Component
         // Payables: supplier bills + unpaid salaries.
         $billsPayable = Purchase::whereIn('status', ['unpaid', 'partial'])
             ->get()->sum(fn (Purchase $p) => $p->balance());
-        $payrollPayable = (float) \App\Models\Payroll::where('status', 'pending')->sum('net_amount');
+        $payrollPayable = \App\Models\Payroll::whereIn('status', ['pending', 'partial'])->get()
+            ->sum(fn (\App\Models\Payroll $p) => max(0, $p->balance()));
 
         // Employee advances still owed back to the factory.
         $advancesOut = Employee::with('advances')->get()->sum(fn (Employee $e) => $e->advanceBalance());

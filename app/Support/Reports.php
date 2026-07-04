@@ -108,10 +108,16 @@ class Reports
                 return max(0, round((float) $p->total - (float) $paid, 2));
             });
 
-        // Salaries recorded but not yet paid.
-        $salariesPayable = (float) Payroll::where('status', 'pending')
+        // Salaries recorded but not fully paid — the outstanding balance as of date.
+        $salariesPayable = Payroll::with('payments')
+            ->whereIn('status', ['pending', 'partial'])
             ->where(fn ($q) => $q->whereNull('period_end')->orWhere('period_end', '<=', $date))
-            ->sum('net_amount');
+            ->get()
+            ->sum(function (Payroll $p) use ($asOf) {
+                $paid = $p->payments->filter(fn ($t) => $t->occurred_on && $t->occurred_on->lte($asOf))->sum('amount');
+
+                return max(0, round((float) $p->net_amount - (float) $paid, 2));
+            });
 
         $assets = [
             'cashAccounts' => $accounts,

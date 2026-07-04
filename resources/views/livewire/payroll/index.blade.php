@@ -40,29 +40,34 @@
                     <tr>
                         <th class="px-4 py-3">کارمند</th>
                         <th class="px-4 py-3">دوره</th>
-                        <th class="px-4 py-3 text-left">پایه</th>
-                        <th class="px-4 py-3 text-left">پاداش</th>
-                        <th class="px-4 py-3 text-left">کسورات</th>
+                        <th class="px-4 py-3 text-left">اضافه‌کاری</th>
                         <th class="px-4 py-3 text-left">خالص</th>
+                        <th class="px-4 py-3 text-left">پرداخت‌شده</th>
+                        <th class="px-4 py-3 text-left">باقی‌مانده</th>
                         <th class="px-4 py-3">وضعیت</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-100">
                     @forelse ($payrolls as $payroll)
+                        @php $bal = $payroll->balance(); @endphp
                         <tr class="hover:bg-stone-50">
                             <td class="px-4 py-3 font-medium text-stone-800">{{ $payroll->employee->name }}</td>
                             <td class="px-4 py-3 text-stone-600">{{ $payroll->period_label }}</td>
-                            <td class="px-4 py-3 text-left text-stone-600">{{ Format::money($payroll->base_amount) }}</td>
-                            <td class="px-4 py-3 text-left text-stone-600">{{ Format::money($payroll->bonus) }}</td>
-                            <td class="px-4 py-3 text-left text-stone-600">{{ Format::money((float) $payroll->deductions + (float) $payroll->advance_deducted) }}</td>
+                            <td class="px-4 py-3 text-left {{ $payroll->overtime > 0 ? 'font-medium text-blue-600' : 'text-stone-400' }}">{{ Format::money($payroll->overtime) }}</td>
                             <td class="px-4 py-3 text-left font-medium text-stone-800">{{ Format::money($payroll->net_amount) }}</td>
+                            <td class="px-4 py-3 text-left text-stone-600">{{ Format::money($payroll->amountPaid()) }}</td>
+                            <td class="px-4 py-3 text-left {{ $bal > 0.001 ? 'font-medium text-amber-700' : ($bal < -0.001 ? 'font-medium text-blue-600' : 'text-stone-400') }}">
+                                {{ Format::money($bal) }}
+                                @if ($bal > 0.001)<span class="block text-[10px] font-normal text-stone-400">بدهی به کارمند</span>
+                                @elseif ($bal < -0.001)<span class="block text-[10px] font-normal text-stone-400">اضافه‌پرداخت</span>@endif
+                            </td>
                             <td class="px-4 py-3"><x-status-badge :status="$payroll->status" /></td>
                             <td class="px-4 py-3 text-left">
                                 @if ($payroll->status !== 'paid')
-                                    <button wire:click="openPay({{ $payroll->id }})" class="text-sm font-medium text-green-600 hover:text-green-800">پرداخت</button>
+                                    <button wire:click="openPay({{ $payroll->id }})" class="text-sm font-medium text-green-600 hover:text-green-800">{{ $payroll->status === 'partial' ? 'پرداخت باقی‌مانده' : 'پرداخت' }}</button>
                                 @endif
-                                <button wire:click="deletePayroll({{ $payroll->id }})" wire:confirm="این اجرای لیست حقوق حذف شود؟" class="mr-2 text-stone-300 hover:text-red-600">✕</button>
+                                <button wire:click="deletePayroll({{ $payroll->id }})" wire:confirm="این اجرای لیست حقوق و پرداخت‌های آن حذف شود؟" class="mr-2 text-stone-300 hover:text-red-600">✕</button>
                             </td>
                         </tr>
                     @empty
@@ -129,10 +134,15 @@
                     @error('periodLabel') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="mb-1 block text-sm font-medium text-stone-700">پایه</label><input type="number" step="0.01" wire:model="payrollBase" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
-                    <div><label class="mb-1 block text-sm font-medium text-stone-700">پاداش</label><input type="number" step="0.01" wire:model="payrollBonus" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
-                    <div><label class="mb-1 block text-sm font-medium text-stone-700">کسورات</label><input type="number" step="0.01" wire:model="payrollDeductions" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
-                    <div><label class="mb-1 block text-sm font-medium text-stone-700">بازیافت مساعده</label><input type="number" step="0.01" wire:model="payrollAdvance" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                    <div><label class="mb-1 block text-sm font-medium text-stone-700">پایه</label><input type="number" step="0.01" wire:model.live="payrollBase" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                    <div><label class="mb-1 block text-sm font-medium text-stone-700">پاداش</label><input type="number" step="0.01" wire:model.live="payrollBonus" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                    <div><label class="mb-1 block text-sm font-medium text-blue-700">اضافه‌کاری</label><input type="number" step="0.01" wire:model.live="payrollOvertime" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                    <div><label class="mb-1 block text-sm font-medium text-stone-700">کسورات</label><input type="number" step="0.01" wire:model.live="payrollDeductions" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                    <div class="col-span-2"><label class="mb-1 block text-sm font-medium text-stone-700">بازیافت مساعده</label><input type="number" step="0.01" wire:model.live="payrollAdvance" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"></div>
+                </div>
+                <div class="flex items-center justify-between rounded-lg bg-amber-50 px-3 py-2 text-sm">
+                    <span class="text-stone-600">خالص قابل پرداخت</span>
+                    <span class="text-base font-bold text-stone-800">{{ Format::money($this->previewNet()) }}</span>
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" wire:click="$set('showPayrollForm', false)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
@@ -148,6 +158,12 @@
             <form wire:submit="payPayroll" class="w-full max-w-sm space-y-4 rounded-2xl bg-white p-6 shadow-xl">
                 <h3 class="text-lg font-semibold text-stone-800">پرداخت معاش</h3>
                 <div>
+                    <label class="mb-1 block text-sm font-medium text-stone-700">مبلغ پرداخت</label>
+                    <input type="number" step="0.01" wire:model="payAmount" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                    @error('payAmount') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    <p class="mt-1 text-xs text-stone-400">اگر کمتر از باقی‌مانده بپردازید، بقیه به‌عنوان بدهی به کارمند ثبت می‌شود. برای پرداخت بیشتر بابت اضافه‌کاری، آن را در اجرای لیست حقوق وارد کنید.</p>
+                </div>
+                <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">پرداخت از حساب</label>
                     <select wire:model="payAccountId" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
                         <option value="">— انتخاب کنید —</option>
@@ -158,6 +174,10 @@
                 <div>
                     <label class="mb-1 block text-sm font-medium text-stone-700">تاریخ</label>
                     <input type="date" wire:model="payDate" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-stone-700">یادداشت / دلیل (اختیاری)</label>
+                    <input type="text" wire:model="payNote" placeholder="مثلاً پرداخت جزئی، اضافه‌کاری…" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" wire:click="$set('payingPayrollId', null)" class="rounded-lg px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">لغو</button>
