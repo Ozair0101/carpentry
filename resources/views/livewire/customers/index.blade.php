@@ -5,14 +5,17 @@
                    class="w-full rounded-lg border border-stone-300 py-2 pr-9 pl-3 text-sm focus:border-amber-500 focus:ring-amber-500">
             <span class="pointer-events-none absolute right-3 top-2.5 text-stone-400">🔍</span>
         </div>
-        <a href="{{ route('customers.create') }}" wire:navigate
-           class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">
-            + مشتری جدید
-        </a>
+        <div class="flex items-center gap-2">
+            <x-print-button target="#customers-table" title="فهرست مشتریان" />
+            <a href="{{ route('customers.create') }}" wire:navigate
+               class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">
+                + مشتری جدید
+            </a>
+        </div>
     </div>
 
     <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-        <table class="min-w-full divide-y divide-stone-200 text-sm">
+        <table id="customers-table" class="min-w-full divide-y divide-stone-200 text-sm">
             <thead class="bg-stone-50 text-right text-xs font-semibold uppercase tracking-wide text-stone-500">
                 <tr>
                     <th class="px-4 py-3">نام</th>
